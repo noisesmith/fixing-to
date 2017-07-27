@@ -14,8 +14,9 @@ A Clojure data type that acts like a function that's also a hash map.
 (assoc foo :a 0 :b 1)
 => #user.Fixing_fooRecord{:a 0, :b 1, :args nil, :doc "a foo"}
 ((assoc foo :a 0 :b 1) :a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z)
-=> 0 1 :a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z
-nil)
+0 1 :a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z
+=> nil
+```
 
 ## License
 
