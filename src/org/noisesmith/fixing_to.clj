@@ -28,15 +28,15 @@
     `(do
       (defrecord ~record-name ~(conj fields 'args)
            IFn
-           (~'call [this#] (.invoke this#))
-           (~'run [this#] (.invoke this#))
-           (~'applyTo [this# args#] (.invoke (assoc this# :args args#)))
-           (~'invoke
+           (call [this#] (.invoke this#))
+           (run [this#] (.invoke this#))
+           (applyTo [this# args#] (.invoke (assoc this# :args args#)))
+           (invoke
              ~@invoke)
            ~@(for [n (range 1 21)]
-               `(~'invoke ~(make-arglist n [this])
+               `(invoke ~(make-arglist n [this])
                           (.invoke (assoc ~this :args ~(make-arglist n)))))
-           (~'invoke ~(make-arglist 20 [this] [args])
+           (invoke ~(make-arglist 20 [this] [args])
              (.invoke (assoc ~this :args
                              (into ~(make-arglist 20 []) ~args))))
            ~@etc)
@@ -51,7 +51,7 @@
            ([this]
             (apply println a b args)))
          (assoc foo :a 0 :b 1)
-         #user.Fixing_fooRecord{:a 0, :b 1, :args nil, :doc "a foo"}
+         =>#user.Fixing_fooRecord{:a 0, :b 1, :args nil, :doc "a foo"}
          ((assoc foo :a 0 :b 1) :a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z)
-         => 0 1 :a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z
+         =>0 1 :a :b :c :d :e :f :g :h :i :j :k :l :m :n :o :p :q :r :s :t :u :v :w :x :y :z
          nil)
