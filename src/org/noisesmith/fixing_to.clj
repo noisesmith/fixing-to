@@ -11,38 +11,23 @@
          after)))
 
 (defmacro def-fixing-to
-  "creates a record instance which acts like a function,
-   with the body of invoke being compiled as its body, with an
-   implicit args field containing a variable list of all args
-   provided.
-
-   For simplicity, the doc argument is mandatory.
-
-   The etc arg allows implementing other protocols or interfaces.
-
-   Does not support multiple arities, instead put keys on the record."
-  [f-name doc fields invoke & etc]
-  (let [this (gensym "this")
-        args (gensym "args")
-        record-name (symbol (str 'Fixing_ (munge f-name) 'Record))]
-    `(do
-       (defrecord ~record-name ~(conj fields 'args)
-         IFn
-         (call [this#] (.invoke this#))
-         (run [this#] (.invoke this#))
-         (applyTo [this# args#] (.invoke (assoc this# :args args#)))
-         (invoke
-           ~@invoke)
-         ~@(for [n (range 1 21)]
-             `(invoke ~(make-arglist n [this])
-                      (.invoke (assoc ~this :args ~(make-arglist n)))))
-         (invoke ~(make-arglist 20 [this] [args])
-           (.invoke (assoc ~this :args
-                           (into ~(make-arglist 20 []) ~args))))
-         ~@etc)
-       (def ~f-name
-         ~doc
-         (~(symbol (str "map->" record-name)) {:doc ~doc})))))
+  [f m doc sig t & body]
+  `(deftype ~t
+     ~doc
+     [~@sig m#]
+     ~@body
+     IFn
+     (call [_#] (.invoke ~f m#))
+     (run [_#] (.invoke ~f m#))
+     (applyTo [_# args#] (apply ~f m# args#))
+     (invoke [_#] (.invoke ~f m#))
+       ~@(for [n (range 1 20)]
+            `(invoke ~(make-arglist n [])
+                (apply ~f  m# ~(make-arglist n))))
+     (invoke ~(make-arglist 20 [])
+       (apply ~f m# ~(make-arglist 20 [])))
+     ;; TODO - hash-map interface goes here
+     ~@body))
 
 (comment (def-fixing-to foo
            "foo has keys a and b and prints the values of those keys,
