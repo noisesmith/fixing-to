@@ -13,9 +13,8 @@
 (defmacro def-fixing-to
   [f m doc sig t & body]
   `(deftype ~t
+     ~(conj sig 'm)
      ~doc
-     [~@sig m#]
-     ~@body
      IFn
      (call [_#] (.invoke ~f m#))
      (run [_#] (.invoke ~f m#))
